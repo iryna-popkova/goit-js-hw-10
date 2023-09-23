@@ -65,7 +65,7 @@ function onFetchError(errorInstance) {
   Notify.failure(
     'Oops! Something went wrong! Try reloading the page or select another cat breed!',
     {
-      timeout: 4000,
+      timeout: 5000,
     }
   );
 }
