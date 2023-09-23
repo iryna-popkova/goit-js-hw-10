@@ -14,11 +14,15 @@ error.classList.add('is-hidden');
 
 fetchBreeds()
   .then(breedsArray => {
+    const dataProvider = breedsArray.map(({ id, name }) => {
+      return { value: id, text: name }
+    })
+
+    dataProvider.unshift({ value: "", text: '-- select a breed --', disabled: true })
+
     new SlimSelect({
       select: breedSelector,
-      data: breedsArray.map (({ id, name }) => {
-        return { value: id, text: name }
-      })
+      data: dataProvider
     })
   }
 )
@@ -29,6 +33,11 @@ breedSelector.addEventListener('change', onSelect);
 
 function onSelect(event) {
   const breedId = event.target.value;
+
+  if (breedId === "") {
+    return;
+  }
+
   loader.classList.replace('is-hidden', 'loader');
   catInfo.classList.add('is-hidden');
 
@@ -50,14 +59,13 @@ catInfo.innerHTML = `<div class="cat-info">
 
 
 function onFetchError(errorInstance) {
-  console.log("Error: " + errorInstance)
   loader.classList.replace('loader', 'is-hidden');
-  error.classList.remove('is-hidden');
+  catInfo.innerHTML = ""
 
   Notify.failure(
     'Oops! Something went wrong! Try reloading the page or select another cat breed!',
     {
-      timeout: 6000,
+      timeout: 4000,
     }
   );
 }
