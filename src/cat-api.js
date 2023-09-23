@@ -8,7 +8,7 @@ export function fetchBreeds() {
       return response.data;
       }
     )
-    .catch((error) => {
+    .catch(error => {
       return new Error('Oops! Something went wrong! Try reloading the page!');
     }
   )

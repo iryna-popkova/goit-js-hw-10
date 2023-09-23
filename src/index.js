@@ -12,16 +12,18 @@ const catInfo = document.querySelector('.cat-info');
 loader.classList.replace('loader', 'is-hidden');
 error.classList.add('is-hidden');
 
-
 fetchBreeds()
   .then(breedsArray => {
-    const markup = breedsArray.map(({ id, name }) => {
-      return `<option value = "${id}">${name}</option>`
-    }).join('');
-    breedSelector.insertAdjacentHTML('afterbegin', markup);
+    new SlimSelect({
+      select: breedSelector,
+      data: breedsArray.map (({ id, name }) => {
+        return { value: id, text: name }
+      })
+    })
   }
- )
-  .catch(error => console.error(error));
+)
+.catch(onFetchError);
+
 
 breedSelector.addEventListener('change', onSelect);
 
@@ -43,10 +45,19 @@ catInfo.innerHTML = `<div class="cat-info">
 <p>${breedContent.temperament}</p>
       </div>`}
   )
+  .catch(onFetchError);
 }
 
-function onFetchError(error) {
-  loader.classList.replace('loader', 'is-hidden');
 
-  Notify.failure('Oops! Something went wrong! Try reloading the page or select another cat breed!');
+function onFetchError(errorInstance) {
+  console.log("Error: " + errorInstance)
+  loader.classList.replace('loader', 'is-hidden');
+  error.classList.remove('is-hidden');
+
+  Notify.failure(
+    'Oops! Something went wrong! Try reloading the page or select another cat breed!',
+    {
+      timeout: 6000,
+    }
+  );
 }
